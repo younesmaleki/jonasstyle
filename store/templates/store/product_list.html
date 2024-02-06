@@ -1,0 +1,436 @@
+{% extends '_base.html' %}
+
+
+
+{% block page_title %}
+    product list
+{% endblock %}
+
+{% block content %}
+    {% load mptt_tags %}
+    {% load static %}
+    <!-- breadcrumb area start -->
+    <div class="page-layout" data-background="{% static 'img/slider/shop.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="breadcrumb-area text-center">
+                        <h2 class="text-dark page-title">shop</h2>
+                        <div class="breadcrumb-menu">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center">
+                                    <li class="breadcrumb-item"><a class="btn-info" href="{% url 'home' %}">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a class="btn-info"
+                                                                   href="{% url 'product_list' %}">shop</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb area end -->
+
+    <!-- shop page start -->
+    <div class="shop-page pt-85">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-3 col-lg-4 col-md-12">
+                    <div class="sidebar">
+                        <div class="product-widget">
+                            <div class="product-widget pt-50">
+                                <form method="get" action="{% url 'product_list' %}">
+                                    {% csrf_token %}
+                                    <h3 class="widget-title mb-30">Product categories</h3>
+
+                                    <ul class="product-categories">
+                                        <label for="category">Select Category:</label>
+                                        <select name="category" id="category">
+                                            <option value="">Product Categories</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category.fa_name }}">{{ category.fa_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </ul>
+                                    <br>
+                                    <h3 class="widget-title mb-30">Filter By Price</h3>
+                                    <label for="min_price">Min Price:</label>
+                                    <input type="number" name="min_price" id="min_price"
+                                           value="{{ request.GET.min_price }}">
+                                    <br>
+                                    <label for="max_price">Max Price:</label>
+                                    <input type="number" name="max_price" id="max_price"
+                                           value="{{ request.GET.max_price }}">
+                                    <div class="filter-price d-inline-block pl-20">
+                                        <input type="button" id="amount" value="{{ request.GET.min_price }} - {{ request.GET.max_price }}">
+                                    </div>
+                                    <br>
+                                    <button class="btn-secondary shadow-sm" type="button" onclick="resetForm()">Reset
+                                    </button>
+                                    <div class="product-widget pt-50">
+                                        <h3 class="widget-title mb-30">Color Options</h3>
+                                        <div class="colors-layer">
+                                            <label for="color">Select Color:</label>
+                                            <select name="color" id="color">
+                                                <option value="">All Colors</option>
+                                                {% for color in colors %}
+                                                    <option value="{{ color.en_name }}">{{ color.fa_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button class="btn-info shadow-sm" type="submit">Filter</button>
+                                </form>
+                                <script>
+                                    function resetForm() {
+                                        document.getElementById("min_price").value = "";
+                                        document.getElementById("max_price").value = "";
+                                        document.getElementById("filterForm").submit();
+                                    }
+                                </script>
+                                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-8 col-md-9 col-sm-12">
+                    <div class="shop-top-bar position-relative">
+                        <div class="showing-result">
+                            <p> Showing all {{ products.count }} results</p>
+                        </div>
+                        <div class="shop-tab">
+                            <nav>
+                                <div class="nav nav-tabs shop-tabs" id="nav-tab" role="tablist">
+                                    <button>
+                                        <span>views</span>
+                                    </button>
+                                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                            aria-selected="true">
+                                        <img src="{% static 'img/essential/i2.svg' %}" alt="">
+                                    </button>
+                                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-profile" type="button" role="tab"
+                                            aria-controls="nav-profile" aria-selected="false">
+                                        <img src="{% static 'img/essential/i3.svg' %}" alt="">
+                                    </button>
+                                    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-contact" type="button" role="tab"
+                                            aria-controls="nav-contact" aria-selected="false">
+                                        <img src="{% static 'img/essential/i4.svg' %}" alt="">
+                                    </button>
+                                    <button class="nav-link" id="nav-contact-tab2" data-bs-toggle="tab"
+                                            data-bs-target="#nav-list" type="button" role="tab"
+                                            aria-controls="nav-contact" aria-selected="false">
+                                        <img src="{% static 'img/essential/list.svg' %}" alt="">
+                                    </button>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="shop-filtaring">
+                            <div class="filter-select">
+                                <select class="order-by">
+                                    <option value="Default setting">Default setting</option>
+                                    <option value="Default setting">short by popularity</option>
+                                    <option value="Default setting">short by average rating</option>
+                                    <option value="Default setting">short by latest</option>
+                                    <option value="Default setting">short by price : low to high</option>
+                                    <option value="Default setting">Default setting</option>
+                                </select >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shop-page-product pt-50 pb-100">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade" id="nav-home" role="tabpanel"
+                                         aria-labelledby="nav-home-tab">
+                                        <div class="row">
+                                            {% for product in products %}
+                                                <div class="col-xl-6">
+                                                    <div class="product product-4">
+                                                        <div class="product__thumb">
+                                                            <a href="{{ product.get_absolute_url }}">
+                                                                <img class="product-primary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                                <img class="product-secondary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                            </a>
+                                                            <!-- <div class="product__update">
+                                                                <a class="#">new</a>
+                                                            </div> -->
+                                                            <div class="product-info mb-10">
+                                                                <div class="product_category">
+                                                                    <span>{{ product.category }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__name">
+                                                                <h4><a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a></h4>
+                                                                <div class="pro-price">
+                                                                    <p class="p-absoulute pr-1">
+                                                                        <span>$</span>{{ product.price.price }}</p>
+                                                                    <a class="p-absoulute pr-2" href="#">add to cart</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__action">
+                                                                <div class="inner__action">
+                                                                    <div class="wishlist">
+                                                                        <a href="#"><i class="fal fa-heart"></i></a>
+                                                                    </div>
+                                                                    <div class="view">
+                                                                        <a href="javascript:void(0)"><i
+                                                                                class="fal fa-eye"></i></a>
+                                                                    </div>
+                                                                    <div class="layer">
+                                                                        <a href="#"><i
+                                                                                class="fal fa-layer-group"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                         aria-labelledby="nav-profile-tab">
+                                        <div class="row">
+                                            {% for product in products %}
+                                                <div class="col-xl-4">
+                                                    <div class="product product-4">
+                                                        <div class="product__thumb">
+                                                            <a href="{{ product.get_absolute_url }}">
+                                                                <img class="product-primary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                                <img class="product-secondary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                            </a>
+                                                            <!-- <div class="product__update">
+                                                                <a class="#">new</a>
+                                                            </div> -->
+                                                            <div class="product-info mb-10">
+                                                                <div class="product_category">
+                                                                    <span>{{ product.category }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__name">
+                                                                <h4><a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a></h4>
+                                                                <div class="pro-price">
+                                                                    <p class="p-absoulute pr-1">
+                                                                        <span>$</span>{{ product.price.price }}</p>
+                                                                    <a class="p-absoulute pr-2" href="#">add to cart</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__action">
+                                                                <div class="inner__action">
+                                                                    <div class="wishlist">
+                                                                        <a href="#"><i class="fal fa-heart"></i></a>
+                                                                    </div>
+                                                                    <div class="view">
+                                                                        <a href="javascript:void(0)"><i
+                                                                                class="fal fa-eye"></i></a>
+                                                                    </div>
+                                                                    <div class="layer">
+                                                                        <a href="#"><i
+                                                                                class="fal fa-layer-group"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show active" id="nav-contact" role="tabpanel"
+                                         aria-labelledby="nav-contact-tab">
+                                        <div class="row">
+                                            {% for product in products %}
+                                                <div class="col-xl-3">
+                                                    <div class="product product-3">
+                                                        <div class="product__thumb">
+                                                            <a href="{{ product.get_absolute_url }}">
+                                                                <img class="product-primary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                                <img class="product-secondary"
+                                                                     src="{{ product.thumbnail.url }}"
+                                                                     alt="product_image">
+                                                            </a>
+                                                            <!-- <div class="product__update">
+                                                                <a class="#">new</a>
+                                                            </div> -->
+                                                            <div class="product-info mb-10">
+                                                                <div class="product_category">
+                                                                    <span>{{ product.category }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__name">
+                                                                <h4><a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a></h4>
+                                                                <div class="pro-price">
+                                                                    <p class="p-absoulute pr-1">
+                                                                        <span>$</span>{{ product.price.price }}</p>
+                                                                    <a class="p-absoulute pr-2" href="#">add to cart</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product__action">
+                                                                <div class="inner__action">
+                                                                    <div class="wishlist">
+                                                                        <a href="#"><i class="fal fa-heart"></i></a>
+                                                                    </div>
+                                                                    <div class="view">
+                                                                        <a href="javascript:void(0)"><i
+                                                                                class="fal fa-eye"></i></a>
+                                                                    </div>
+                                                                    <div class="layer">
+                                                                        <a href="#"><i
+                                                                                class="fal fa-layer-group"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-list" role="tabpanel"
+                                         aria-labelledby="nav-contact-tab">
+                                        {% for product in products %}
+                                            <div class="border-top">
+                                                <div class="row">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4">
+                                                        <div class="list-product">
+                                                            <div class="list__thumb">
+                                                                <a href="{{ product.get_absolute_url }}"><img
+                                                                        src="{{ product.thumbnail.url }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-8 col-lg-8 col-md-8">
+                                                        <div class="list__content">
+                                                            <div class="viewcontent">
+                                                                <div class="viewcontent__header">
+                                                                    <a href="{{ product.get_absolute_url }}"><h2
+                                                                            class="mb-10">{{ product.fa_name }}</h2></a>
+                                                                </div>
+                                                                <div class="viewcontent__price">
+                                                                    <h4><span>$</span> {{ product.price.price }}</h4>
+                                                                </div>
+                                                                <div class="view__para">
+                                                                    <p>{{ product.short_description }}</p>
+                                                                </div>
+                                                                <div class="list-actions pt-20">
+                                                                    <div class="viewcontent__action">
+                                                                        <span><a href="#">add to cart</a></span>
+                                                                        <a href="#"><i class="fal fa-heart"></i></a>
+                                                                        <a class="ml-5" href="#"><i
+                                                                                class="fal fa-layer-group"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- shop page end -->
+
+    <!-- search area  -->
+    <div class="search_area">
+        <div class="search_close">
+            <span><i class="fal fa-times"></i></span>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="search-wrapper text-center">
+                        <h2>search</h2>
+                        <div class="search-filtering pt-30">
+                            <div class="search_tab">
+                                <ul class="nav nav-tabs justify-content-center mb-55" id="fff" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="home-tab2" data-bs-toggle="tab"
+                                                data-bs-target="#home2" type="button" role="tab"
+                                                aria-selected="true">All categories
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="profilffe-tab2" data-bs-toggle="tab"
+                                                data-bs-target="#profile2" type="button" role="tab"
+                                                aria-selected="false">Basketball
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="tab"
+                                                data-bs-target="#contact2" type="button" role="tab"
+                                                aria-selected="false">Handbag
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="sportswear-tab" data-bs-toggle="tab"
+                                                data-bs-target="#sportswear" type="button" role="tab"
+                                                aria-selected="false">Sportswear
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="contact3-tab" data-bs-toggle="tab"
+                                                data-bs-target="#contact3" type="button" role="tab"
+                                                aria-selected="false">Youth
+                                        </button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="ddmyTabContent2">
+                                    <div class="tab-pane fade show active" id="home2" role="tabpanel"
+                                    >
+
+                                    </div>
+                                    <div class="tab-pane fade" id="profile2" role="tabpanel"
+                                    >
+
+                                    </div>
+                                    <div class="tab-pane fade" id="contact2" role="tabpanel">
+
+                                    </div>
+                                    <div class="tab-pane fade" id="sportswear" role="tabpanel"
+                                    >
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main_search">
+                            <form action="#">
+                                <input type="text" name="search" placeholder="search products">
+                                <button class="m-search"><i class="fal fa-search d-sm-none d-md-block"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

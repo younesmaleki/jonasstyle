@@ -1,0 +1,9 @@
+venv/
+db.sqlite3
+__pychache__/
+.idea/
+.env
+staticfiles
+
+store/templates/store/product_list_dont_sent_git.html
+store/templates/store/link_dont_sent_git.html

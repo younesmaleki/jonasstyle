@@ -1,0 +1,177 @@
+{% extends '_base.html' %}
+{% load i18n %}
+{% load persian_translation_tags %}
+{% load humanize %}
+
+
+{% block page_title %}
+    order page
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="checkout_area pt-80">
+        <div class="container">
+            <div class="notification__message">
+                <p><i class="fal fa-window-maximize"></i>Returning customer? Click here to <a
+                        href="{% url 'account_login' %}">login</a></p>
+            </div>
+            <div class="row">
+                <div class="col-xl-7 col-lg-7 col-md-12">
+                    <div class="checkout_form mb-100">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="row mb-30">
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="checkout__wrap">
+                                        <label>First name <span>*</span></label>
+                                        <input type="text" name="{{ order_form.first_name.name }}">
+                                        <div> {% if order_form.errors %}
+                                            {% for message in order_form.first_name.errors %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="checkout__wrap">
+                                        <label>Last name <span>*</span></label>
+                                        <input type="text" name="{{ order_form.last_name.name }}">
+                                        <div> {% if order_form.errors %}
+                                            {% for message in order_form.last_name.errors %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Full address <span>*</span></label>
+                                <input class="mb-20" type="text" name="{{ order_form.address.name }}"
+                                       placeholder="house number and street number">
+                                <div> {% if order_form.errors %}
+                                    {% for message in order_form.address.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Postcode<span>*</span></label>
+                                <input type="text" name="{{ order_form.post_code.name }}">
+                                <div> {% if order_form.errors %}
+                                    {% for message in order_form.post_code.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Phone <span>*</span></label>
+                                <input type="text" name="{{ order_form.phone_number.name }}">
+                                <div> {% if order_form.errors %}
+                                    {% for message in order_form.phone_number.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Email address <span>*</span></label>
+                                <input type="email" name="{{ order_form.email.name }}">
+                                <div> {% if order_form.errors %}
+                                    {% for message in order_form.email.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Order notes (optional) <span></span></label>
+                                <textarea name="{{ order_form.order_note.name }}"
+                                          placeholder="Note about your order, e.g special note for delivery"></textarea>
+                                <div> {% if order_form.errors %}
+                                    {% for message in order_form.order_note.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+{#                            <button type="submit">{% trans 'go to payment' %}</button>#}
+                        <div class="order-button">
+                                <button type="submit">{% trans 'go to payment' %}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-lg-5 col-md-12">
+                    <div class="cart__acount ml-50">
+                        <h5>Your order</h5>
+                        <table>
+                        <tr class="first-child-2">
+                            <td>name</td>
+                            <td>quantity</td>
+                            <td>total</td>
+                        </tr>
+                            {% for item in cart %}
+                                <tr class="first-child-2">
+
+                                    <td>{{ item.product_obj.fa_name }} </td>
+                                    <td><span
+                                            class="text-info"> {{ item.quantity }}</span> </td>
+                                    <td>{{ item.get_total_price_single_product }} </td>
+                                </tr>
+                            {% endfor %}
+
+
+                            <tr class="first-child-2">
+                                <td>Total</td>
+                                <td><span
+                                            class="text-info">{{ cart.cart_all_quantity_length }}</span></td>
+                                <td class="lightbluee">{% trans '$' %} {{ cart.get_total_price|intcomma:False|translate_number }}</td>
+                            </tr>
+                        </table>
+                        <div class="checkout__accordion mt-30">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                            {% trans 'Check payments' %}
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show"
+                                         aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p>پرداخت از درگاه زرین پال</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

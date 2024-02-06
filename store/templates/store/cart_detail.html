@@ -1,0 +1,136 @@
+{% extends '_base.html' %}
+{% load persian_translation_tags %}
+{% load humanize %}
+
+
+{% block page_title %}
+    cart page
+{% endblock %}
+
+{% block content %}
+    <!-- breadcrumb area start -->
+    <div class="page-layout" data-background="assets/img/slider/shop.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="breadcrumb-area text-center">
+                        <h2 class="page-title">Cart</h2>
+                        <div class="breadcrumb-menu">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="cart.html">cart</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb area end -->
+
+    <div class="f_cart_area pt-110 mb-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-8 col-lg-8 col-md-12">
+                    <div class="cart_table">
+                        <table>
+                        {% if not cart.is_empty %}
+                            <tr>
+                                <td>Product</td>
+                                <td>Title</td>
+                                <td>price</td>
+                                <td>Quantity</td>
+                                <td>Size</td>
+                                <td>Color</td>
+                                <td>Total</td>
+
+                            </tr>
+                            {% for product in cart %}
+                                <tbody>
+                                <tr class="max-width-set">
+                                    <td>
+                                        <img src="{{ product.product_obj.thumbnail.url }}" alt="">
+                                    </td>
+                                    <td>{{ product.product_obj.fa_name }}</td>
+                                    <td>${{ product.product_price }}</td>
+                                    <td>
+                                        <form method="POST" action="{% url 'cart_add' product.product_id %}">
+                                            {% csrf_token %}
+                                            <div class="viewcontent__action single_action pt-30">
+                                                    <span>
+                                                            <div class="quantity">
+                                                                <input type="number"
+                                                                       class="quantity-input"
+                                                                       name="quantity"
+                                                                       id="qty-1"
+                                                                       value="{{ product.quantity }}"
+                                                                       min="1"
+                                                                >
+                                                                <input type="hidden" name="inplace" value="True"
+                                                                       id="id_inplace">
+                                                                <input type="hidden" name="color"
+                                                                       value="{{ product.color_id }}" id="color_id">
+                                                                <input type="hidden" name="size"
+                                                                       value="{{ product.size_id }}" id="size_id">
+
+                                                            </div>
+                                                        </span>
+                                            </div>
+                                            <button type="submit">update</button>
+                                        </form>
+                                    </td>
+                                    <td>{{ product.size }}</td>
+                                    <td>{{ product.color }}</td>
+
+                                    <td>
+                                        ${{ product.get_total_price_single_product }}
+                                    </td>
+                                    <td class="width-set">
+                                        <a href="{% url 'cart_remove' pk=product.product_id product_version_id=product.product_version_id %}"><i
+                                                class="fal fa-times-circle"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            {% endfor %}
+                            <tfoot>
+                            <tr class="design-footer">
+
+                            <td colspan="1"><a class="text-info" href="{% url 'cart_clear' %}">clear cart</a></td>
+                            </tr>
+                            </tfoot>
+                        {% else %}
+                            <h3 class="text-warning" >your cart is empty please select some product in store... <store class="h2"><a class="text-info" href="{% url 'product_list' %}">go to Shop</a></store></h3>
+                        {% endif %}
+
+                        </table>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-12">
+                    <div class="cart__acount">
+                        <h5>Cart totals</h5>
+                        <table>
+                            <tr class="first-child lastchild">
+                                <td>Shipping</td>
+                                <td>Enter your address to view shipping options <br>
+                                    Calculate shipping
+                                </td>
+                            </tr>
+                            <tr class="first-child">
+                                <td>Total</td>
+                                <td>{{ cart.get_total_price|intcomma:False|translate_number }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="{% url 'order_create' %}"><input type="submit" value="procced to checkout"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

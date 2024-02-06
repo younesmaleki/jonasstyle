@@ -1,0 +1,150 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-21 11:10+0330\n"
+"PO-Revision-Date: 2024-02-04 10:17+0330\n"
+"Last-Translator:   <younes@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.9.9\n"
+
+#: .\models.py:15 .\models.py:16
+msgid "category"
+msgstr "دسته بندی"
+
+#: .\models.py:34 .\models.py:35
+msgid "brand"
+msgstr "برند"
+
+#: .\models.py:36
+msgid "brand description"
+msgstr "توضیحات برند"
+
+#: .\models.py:69 .\models.py:70
+msgid "color"
+msgstr "رنگ"
+
+#: .\models.py:79
+msgid "size"
+msgstr "سایز"
+
+#: .\models.py:86
+msgid "tags"
+msgstr "تگ ها"
+
+#: .\models.py:95
+msgid "Farsi Product Name"
+msgstr "نام محصول"
+
+#: .\models.py:96
+msgid "English Product Name"
+msgstr "نام محصول"
+
+#: .\models.py:97
+msgid "Category"
+msgstr "دسته بندی"
+
+#: .\models.py:98
+msgid "Brand"
+msgstr "برند"
+
+#: .\models.py:99
+msgid "Product Model"
+msgstr "مدل "
+
+#: .\models.py:100
+msgid "Product Colors"
+msgstr "رنگ "
+
+#: .\models.py:101
+msgid "Product Sizes"
+msgstr "سایز "
+
+#: .\models.py:103
+msgid "Product Short Description"
+msgstr "توضیحات محتصر محصول"
+
+#: .\models.py:104
+msgid "Product Full Description"
+msgstr "توضیحات "
+
+#: .\models.py:106
+msgid "Product Attribute"
+msgstr "ویژگی ها"
+
+#: .\models.py:107
+msgid "Product Gender"
+msgstr "جنسیت"
+
+#: .\models.py:109
+msgid "Product Tags"
+msgstr "تگ ها"
+
+#: .\models.py:129
+msgid "Product Price"
+msgstr "قیمت"
+
+#: .\models.py:130
+msgid "Color"
+msgstr "رنگ"
+
+#: .\models.py:140
+msgid "Values of Attribute"
+msgstr "ویژگی های محصول"
+
+#: .\models.py:149
+msgid "Product Variant"
+msgstr "واریانت ها"
+
+#: .\models.py:150
+msgid "Color Variant"
+msgstr "واریانت - رنگ"
+
+#: .\models.py:151
+msgid "Size Variant"
+msgstr "واریانت - سایز"
+
+#: .\models.py:153
+msgid "Variant Inventory"
+msgstr "واریانت - تعداد موجودی "
+
+#: .\models.py:169
+msgid "Product Image"
+msgstr "عکس محصول"
+
+#: .\models.py:187
+msgid "Author Comment"
+msgstr "نویسنده کامنت"
+
+#: .\models.py:188
+msgid "Comment Text"
+msgstr "متن کامنت"
+
+#: .\models.py:191
+msgid "Rate of Product"
+msgstr "امتیاز محصول"
+
+#: .\templates\store\product_detail.html:45
+#: .\templates\store\product_detail.html:188
+#: .\templates\store\product_detail.html:261
+#: .\templates\store\product_detail.html:373
+msgid "$"
+msgstr "تومان "
+
+#: .\templates\store\product_detail.html:144
+msgid "Product Description"
+msgstr "توضیحات محصول"
+
+#: .\templates\store\product_detail.html:214
+msgid "Additional information"
+msgstr "اطلاعات اضافی"

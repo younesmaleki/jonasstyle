@@ -1,0 +1,403 @@
+{% extends '_base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load jalali_tags %}
+{% load persian_translation_tags %}
+{% load humanize %}
+
+{% block page_title %}
+    product detail
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- single_breadcrumb_area start -->
+    <div class="single_breadcrumb pt-25">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12">
+                            <div class="single_preview_product">
+                                <div class="tab-content" id="myTabCddffontent">
+                                    <!-- Thumbnail Image -->
+                                    <div class="tab-pane fade show active" id="thumbnail" role="tabpanel">
+                                        <div class="full-view">
+                                            <img src="{{ product.thumbnail.url }}" alt="{{ product.fa_name }}">
+                                        </div>
+                                    </div>
+                                    <!-- Other Images -->
+                                    {% for image in product_images %}
+                                        <div class="tab-pane fade" id="image{{ forloop.counter }}" role="tabpanel">
+                                            <div class="full-view">
+                                                <img src="{{ image.image.url }}" alt="{{ product.fa_name }}">
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="single_preview_content pl-30">
+                        <h2 class="title-5 edit-title border-bottom-0">{{ product.fa_name }}</h2>
+                        <div class="s-price pt-30 mb-30">
+                            <span>{% trans '$' %}{{ product.price.price|intcomma:False|translate_number }}</span>
+                            <div class="viewcontent__stock">
+                                <h4>Available
+                                    :<span> {% if product.is_active %}
+                                        In Stock
+                                    {% elif not product.is_active %}
+                                        <span class="text-danger">Out Stock</span>
+                                    {% endif %}
+                                    </span>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="s-des">
+                            <p>{{ product.short_description }}</p>
+                        </div>
+                        <div class="container viewcontent__action single_action pt-30">
+                            <form action="{% url 'cart_add' product.pk %}" method="POST">
+                                {% csrf_token %}
+
+                                {{ add_to_cart_form|crispy }}
+                                {{ select_size_and_color_form|crispy }}
+                                <br>
+                                <span><button type="submit"
+                                    class="btn-info btn-small btn-bg-red btn-color-white btn-hover-2">
+                                    {% trans 'add to cart' %}
+                                </button></span>
+                            </form>
+                            <span><i class="fal fa-heart"></i></span>
+                        </div>
+                        <div class="viewcontent__footer border-top-0 border-bottom pb-30">
+                            <ul>
+                                <li>Category:</li>
+                            </ul>
+                            <ul>
+                                <li>{{ product.category }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <div class="single_product_tab d-sm-none d-md-block">
+                    <div class="single_prodct single-bottom">
+                        <ul class="nav nav-tabs justify-content-center mb-55" id="myffTab" role="tablist">
+                            <!-- Thumbnail Tab -->
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="thumbnail-tab" data-bs-toggle="tab"
+                                        data-bs-target="#thumbnail" type="button" role="tab"
+                                        aria-selected="true"><img src="{{ product.thumbnail.url }}"
+                                                                  alt="{{ product.fa_name }}"></button>
+                            </li>
+                            <!-- Other Images Tabs -->
+                            {% for image in product_images %}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="image{{ forloop.counter }}-tab" data-bs-toggle="tab"
+                                            data-bs-target="#image{{ forloop.counter }}" type="button" role="tab"
+                                            aria-selected="false"><img src="{{ image.image.url }}"
+                                                                       alt="{{ product.fa_name }}"></button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="single_product_long_desc pt-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl 12 col-lg-12 col-md-12">
+                    <div class="categories__tab single_disc_tab">
+                        <ul class="nav nav-tabs justify-content-center" id="myerTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab3" data-bs-toggle="tab"
+                                        data-bs-target="#Description" type="button" role="tab"
+                                        aria-selected="true">Description
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab3" data-bs-toggle="tab"
+                                        data-bs-target="#Additional"
+                                        type="button" role="tab"
+                                        aria-selected="false">Additional information
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#Reviews"
+                                        type="button" role="tab"
+                                        aria-selected="false">Reviews ({{ product.comments.count }})
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabCffontent">
+                            <div class="tab-pane fade show active" id="Description" role="tabpanel">
+                                <div class="single_product_description text-center pt-80">
+                                    <h2 class="title-5 border-0">{% trans 'Product Description' %}</h2>
+                                    <p>{{ product.full_description|safe }}</p>
+
+                                </div>
+                                <!-- related_products.html -->
+                                <div class="categories_area pt-50 mb-100">
+                                    <div class="container-fluid">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                            <div class="section-wrapper text-center mb-35">
+                                                <h2 class="section-title">Related products </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="categories__tab">
+                                                    <div class="tab-content" id="dfmyTabContent">
+                                                        <div class="tab-pane fade show active" id="hoeerme"
+                                                             role="tabpanel">
+                                                            <div class="container">
+                                                                <div class="product-active swiper-container">
+                                                                    <div class="swiper-wrapper">
+                                                                        {% for product in related_products %}
+                                                                            <div class="product-item swiper-slide product-item-{{ product.id }} popup-trigger wow fadeInUp"
+                                                                                 data-wow-duration="1s"
+                                                                                 data-wow-delay="0.2s">
+                                                                                <div class="product">
+                                                                                    <div class="product__thumb">
+                                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                                            <img class="product-primary"
+                                                                                                 src="{{ product.thumbnail.url }}"
+                                                                                                 alt="product_image">
+                                                                                        </a>
+                                                                                        <div class="product-info mb-10">
+                                                                                            <div class="product_category">
+                                                                                                <span>{{ product.category.en_name }}</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="product__name">
+                                                                                            <h4>
+                                                                                                <a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a>
+                                                                                            </h4>
+                                                                                        </div>
+                                                                                        <div class="pro-price">
+                                                                                            <p class="p-absoulute pr-1">
+                                                                                                <span>{% trans '$' %}</span>{{ product.price.price|intcomma:False|translate_number }}
+                                                                                            </p>
+{#                                                                                            <a class="p-absoulute pr-2"#}
+{#                                                                                               href="#">add to cart</a>#}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="Additional" role="tabpanel">
+
+                                <div class="additional-information">
+                                    <ul>
+                                        <li class="title">{% trans 'Additional information' %}</li>
+                                        {% for attribute_value in attribute_values %}
+                                            <li>{{ attribute_value.attribute }}</li>
+                                            <li>{{ attribute_value.value }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <!-- related_products.html -->
+                                <div class="categories_area pt-50 mb-100">
+                                    <div class="container-fluid">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                            <div class="section-wrapper text-center mb-35">
+                                                <h2 class="section-title">Related products </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="categories__tab">
+                                                    <div class="tab-content" id="dfmyTabContent">
+                                                        <div class="tab-pane fade show active" id="hoeerme"
+                                                             role="tabpanel">
+                                                            <div class="container">
+                                                                <div class="product-active swiper-container">
+                                                                    <div class="swiper-wrapper">
+                                                                        {% for product in related_products %}
+                                                                            <div class="product-item swiper-slide product-item-{{ product.id }} popup-trigger wow fadeInUp"
+                                                                                 data-wow-duration="1s"
+                                                                                 data-wow-delay="0.2s">
+                                                                                <div class="product">
+                                                                                    <div class="product__thumb">
+                                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                                            <img class="product-primary"
+                                                                                                 src="{{ product.thumbnail.url }}"
+                                                                                                 alt="product_image">
+                                                                                        </a>
+                                                                                        <div class="product-info mb-10">
+                                                                                            <div class="product_category">
+                                                                                                <span>{{ product.category.en_name }}</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="product__name">
+                                                                                            <h4>
+                                                                                                <a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a>
+                                                                                            </h4>
+                                                                                        </div>
+                                                                                        <div class="pro-price">
+                                                                                            <p class="p-absoulute pr-1">
+                                                                                                <span>{% trans '$' %}</span>{{ product.price.price|intcomma:False|translate_number }}
+                                                                                            </p>
+{#                                                                                            <a class="p-absoulute pr-2"#}
+{#                                                                                               href="#">add to cart</a>#}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="Reviews" role="tabpanel">
+                                <div class="container">
+
+                                    <div class="row">
+                                        <div class="col-xl-8 col-lg-8 col-md-8 offset-xl-2">
+                                            <div class="product__reviews_comment pt-150">
+                                                <p>{{ product.comments.count }} review for {{ product.fa_name }}</p>
+                                                {% for comment in product.comments.all %}
+                                                    <div class="user_design">
+                                                        <div class="user__thumb">
+                                                            <img src="{% static 'img/desc/team2-60x60.png' %}" alt="">
+                                                        </div>
+                                                        <div class="user__content">
+                                                            <h4>{{ comment.user.username }}<span> – {{ comment.datetime_created|to_jalali:'%Y/%m/%d '|translate_number }}: </span>
+                                                            </h4>
+                                                            <span>
+                                                                {% for star in "12345" %}
+                                                                    {% if star|add:"0" <= comment.product_stars|add:"0" %}
+                                                                        <a href="#"><i
+                                                                                class="fal fa-star start-color"></i></a>
+                                                                    {% else %}
+                                                                        <a href="#"><i class="fal fa-star"></i></a>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </span>
+                                                            <p>{{ comment.body }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <h4 class="pt-60 mb-25 add_review">Add a review </h4>
+                                            {% if user.is_authenticated %}
+                                                <div class="review_form">
+                                                    <form action="{% url 'comment_create' product.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        {{ comment_form.as_p }}
+                                                        <button type="submit">submit</button>
+                                                    </form>
+                                                </div>
+                                            {% else %}
+                                                <div class="'review_form">
+                                                    <p>for create an comment please login with in your accoutn. <a
+                                                            class="text-info" href="{% url 'account_login' %}">login</a>
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- related_products.html -->
+                                <div class="categories_area pt-50 mb-100">
+                                    <div class="container-fluid">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                            <div class="section-wrapper text-center mb-35">
+                                                <h2 class="section-title">Related products </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="categories__tab">
+                                                    <div class="tab-content" id="dfmyTabContent">
+                                                        <div class="tab-pane fade show active" id="hoeerme"
+                                                             role="tabpanel">
+                                                            <div class="container">
+                                                                <div class="product-active swiper-container">
+                                                                    <div class="swiper-wrapper">
+                                                                        {% for product in related_products %}
+                                                                            <div class="product-item swiper-slide product-item-{{ product.id }} popup-trigger wow fadeInUp"
+                                                                                 data-wow-duration="1s"
+                                                                                 data-wow-delay="0.2s">
+                                                                                <div class="product">
+                                                                                    <div class="product__thumb">
+                                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                                            <img class="product-primary"
+                                                                                                 src="{{ product.thumbnail.url }}"
+                                                                                                 alt="product_image">
+                                                                                        </a>
+                                                                                        <div class="product-info mb-10">
+                                                                                            <div class="product_category">
+                                                                                                <span>{{ product.category.en_name }}</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="product__name">
+                                                                                            <h4>
+                                                                                                <a href="{{ product.get_absolute_url }}">{{ product.fa_name }}</a>
+                                                                                            </h4>
+                                                                                        </div>
+                                                                                        <div class="pro-price">
+                                                                                            <p class="p-absoulute pr-1">
+                                                                                                <span>{% trans '$' %}</span>{{ product.price.price|intcomma:False|translate_number }}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
